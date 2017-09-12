@@ -27893,12 +27893,8 @@ page-individual-chat .scroll-content {
   margin-bottom: 50px !important;
 }
 
-.ios page-landing ion-content, .md page-landing ion-content {
-  background: #f5f6f7;
-}
-
 .ios page-landing ion-content .appLogo, .md page-landing ion-content .appLogo {
-  margin-top: 50px;
+  margin-top: 20px;
   width: 80px;
 }
 
@@ -27917,6 +27913,16 @@ page-individual-chat .scroll-content {
 
 .ios page-landing ion-content .item-inner, .md page-landing ion-content .item-inner {
   background: #f5f6f7;
+}
+
+.ios page-landing ion-content .item-block, .ios page-landing ion-content .item-inner, .md page-landing ion-content .item-block, .md page-landing ion-content .item-inner {
+  background: transparent !important;
+}
+
+.ios page-landing ion-content .title, .md page-landing ion-content .title {
+  font-size: 24px;
+  margin: 0;
+  font-weight: 500;
 }
 
 .errorColor {
