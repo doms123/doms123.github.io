@@ -64,9 +64,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 var UserslistPage = (function () {
-    function UserslistPage(navCtrl, navParams, userProvider) {
+    function UserslistPage(navCtrl, navParams, toastCtrl, userProvider) {
         this.navCtrl = navCtrl;
         this.navParams = navParams;
+        this.toastCtrl = toastCtrl;
         this.userProvider = userProvider;
         this.users = [];
         this.searchUserArr = [];
@@ -100,24 +101,43 @@ var UserslistPage = (function () {
         this.users = this.searchUserArr;
         if (this.searchStr.trim() != '') {
             this.users = this.users.filter(function (user) {
-                if (user.displayName.toLowerCase().indexOf(_this.searchStr.toLowerCase()) > -1) {
-                    _this.noResult = false;
-                }
-                else {
-                    _this.noResult = true;
-                }
+                return (user.displayName.toLowerCase().indexOf(_this.searchStr.toLowerCase()) > -1);
             });
+            if (this.users.length == 0) {
+                this.noResult = true;
+            }
+            else {
+                this.noResult = false;
+            }
         }
+    };
+    UserslistPage.prototype.sendFriendRequest = function (recipient, index) {
+        var _this = this;
+        this.users.splice(index, 1);
+        this.userProvider.sendFriendRequest(recipient).then(function () {
+            var toast = _this.toastCtrl.create({
+                message: "Friend request to " + recipient.displayName + " was sent",
+                duration: 5000
+            });
+            toast.present();
+            if (_this.users.length == 0) {
+                _this.noResult = true;
+            }
+            else {
+                _this.noResult = false;
+            }
+        });
     };
     return UserslistPage;
 }());
 UserslistPage = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* IonicPage */])(),
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-        selector: 'page-userslist',template:/*ion-inline-start:"C:\Users\Sanchez\Desktop\ng4_ionic3\FireChat\src\pages\userslist\userslist.html"*/'<ion-header>\n  <ion-navbar color="light-blue">\n    <ion-title>Users</ion-title>\n  </ion-navbar>\n</ion-header>\n\n<ion-content>\n  <ion-searchbar [(ngModel)]="searchStr" [formControl]="searchControl" (ionInput)="onSearchInput()"></ion-searchbar>\n  <div *ngIf="searching" class="spinner-container">\n    <ion-spinner item-start="" name="bubbles" class="spinner spinner-ios spinner-bubbles spinner-ios-bubbles"></ion-spinner>\n  </div>\n  <ion-list *ngIf="!searching">\n    <ion-item *ngFor="let user of users" (click)="chatBox(user)">\n      <ion-avatar item-start>\n        <span class="unreadCount" *ngIf="user.unread">{{user.unread}}</span>\n        <img src="{{user.photo}}" *ngIf="user.photo;else photo;">\n        <ng-template #photo><span class="icon-circle">{{user.displayName.charAt(0)}}</span></ng-template>\n      </ion-avatar>\n      <ion-label>\n        <h3>{{user.displayName}} <span [class]="user.status"></span></h3>\n        <p>{{user.email}}</p>\n      </ion-label>\n      <button round ion-button item-end icon-left icon-only small color="light-blue">\n        <ion-icon name="person-add"></ion-icon>\n      </button>\n    </ion-item>\n\n    <ion-item *ngIf="noResult && !users.length">\n      <ion-label>\n        <h3>No users found!</h3>\n      \n      </ion-label>\n    </ion-item>\n  </ion-list>\n</ion-content>\n'/*ion-inline-end:"C:\Users\Sanchez\Desktop\ng4_ionic3\FireChat\src\pages\userslist\userslist.html"*/,
+        selector: 'page-userslist',template:/*ion-inline-start:"C:\Users\Sanchez\Desktop\ng4_ionic3\FireChat\src\pages\userslist\userslist.html"*/'<ion-header>\n  <ion-navbar color="light-blue">\n    <ion-title>Users</ion-title>\n  </ion-navbar>\n</ion-header>\n\n<ion-content>\n  <ion-searchbar [(ngModel)]="searchStr" [formControl]="searchControl" (ionInput)="onSearchInput()"></ion-searchbar>\n  <div *ngIf="searching" class="spinner-container">\n    <ion-spinner item-start="" name="bubbles" class="spinner spinner-ios spinner-bubbles spinner-ios-bubbles"></ion-spinner>\n  </div>\n  <ion-list *ngIf="!searching">\n    <ion-item *ngFor="let user of users; let i = index">\n      <ion-avatar item-start>\n        <span class="unreadCount" *ngIf="user.unread">{{user.unread}}</span>\n        <img src="{{user.photo}}" *ngIf="user.photo;else photo;">\n        <ng-template #photo><span class="icon-circle">{{user.displayName.charAt(0)}}</span></ng-template>\n      </ion-avatar>\n      <ion-label>\n        <h3>{{user.displayName}} <span [class]="user.status"></span></h3>\n        <p>{{user.email}}</p>\n      </ion-label>\n      <button ion-button item-end icon-left icon-only small color="light-blue" (click)="sendFriendRequest(user, i)">\n        <ion-icon name="person-add"></ion-icon>\n      </button>\n    </ion-item>\n\n    <ion-item *ngIf="noResult && !users.length">\n      <ion-label>\n        <h3>No users found!</h3>\n      \n      </ion-label>\n    </ion-item>\n  </ion-list>\n</ion-content>\n'/*ion-inline-end:"C:\Users\Sanchez\Desktop\ng4_ionic3\FireChat\src\pages\userslist\userslist.html"*/,
     }),
     __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavController */],
         __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavParams */],
+        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* ToastController */],
         __WEBPACK_IMPORTED_MODULE_2__providers_user_user__["a" /* UserProvider */]])
 ], UserslistPage);
 
