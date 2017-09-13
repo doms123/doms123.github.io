@@ -513,7 +513,7 @@ var UserProvider = (function () {
                                 friendArr.push(friendKey);
                             }
                             var friendReqArr = [];
-                            for (var friendReqKey in userData[userKey].friendReq) {
+                            for (var friendReqKey in userData[_this.loggedUserId].friendReq) {
                                 friendArr.push(friendReqKey);
                             }
                             if (friendArr.indexOf(_this.loggedUserId) == -1) {
