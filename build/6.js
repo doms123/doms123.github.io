@@ -75,7 +75,7 @@ var NotificationsPage = (function () {
 NotificationsPage = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* IonicPage */])(),
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-        selector: 'page-notifications',template:/*ion-inline-start:"C:\Users\Sanchez\Desktop\ng4_ionic3\FireChat\src\pages\notifications\notifications.html"*/'<ion-header>\n  <ion-navbar color="light-blue">\n    <ion-title>Notifications</ion-title>\n  </ion-navbar>\n</ion-header>\n\n<ion-content padding>\n\n</ion-content>\n'/*ion-inline-end:"C:\Users\Sanchez\Desktop\ng4_ionic3\FireChat\src\pages\notifications\notifications.html"*/,
+        selector: 'page-notifications',template:/*ion-inline-start:"C:\Users\ph2150108\Desktop\angular4\FireChat\src\pages\notifications\notifications.html"*/'<ion-header>\n\n  <ion-navbar color="light-blue">\n\n    <ion-title>Notifications</ion-title>\n\n  </ion-navbar>\n\n</ion-header>\n\n\n\n<ion-content padding>\n\n\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\ph2150108\Desktop\angular4\FireChat\src\pages\notifications\notifications.html"*/,
     }),
     __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavParams */]])
 ], NotificationsPage);

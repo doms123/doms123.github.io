@@ -68,7 +68,7 @@ var TabsPage = (function () {
 TabsPage = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* IonicPage */])(),
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-        selector: 'page-tabs',template:/*ion-inline-start:"C:\Users\Sanchez\Desktop\ng4_ionic3\FireChat\src\pages\tabs\tabs.html"*/'<ion-tabs color="light-blue">\n  <ion-tab tabIcon="chatbubbles" tabTitle="Chat" [root]="tab1"></ion-tab>\n  <ion-tab tabIcon="notifications" tabTitle="Notifications" [root]="tab2"></ion-tab>\n  <ion-tab tabIcon="person" tabTitle="Profile" [root]="tab3"></ion-tab>\n  <ion-tab tabIcon="settings" tabTitle="Settings" [root]="tab4"></ion-tab>\n</ion-tabs>\n\n'/*ion-inline-end:"C:\Users\Sanchez\Desktop\ng4_ionic3\FireChat\src\pages\tabs\tabs.html"*/,
+        selector: 'page-tabs',template:/*ion-inline-start:"C:\Users\ph2150108\Desktop\angular4\FireChat\src\pages\tabs\tabs.html"*/'<ion-tabs color="light-blue">\n\n  <ion-tab tabIcon="chatbubbles" tabTitle="Chat" [root]="tab1"></ion-tab>\n\n  <ion-tab tabIcon="notifications" tabTitle="Notifications" [root]="tab2"></ion-tab>\n\n  <ion-tab tabIcon="person" tabTitle="Profile" [root]="tab3"></ion-tab>\n\n  <ion-tab tabIcon="settings" tabTitle="Settings" [root]="tab4"></ion-tab>\n\n</ion-tabs>\n\n\n\n'/*ion-inline-end:"C:\Users\ph2150108\Desktop\angular4\FireChat\src\pages\tabs\tabs.html"*/,
     }),
     __metadata("design:paramtypes", [])
 ], TabsPage);
