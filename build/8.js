@@ -48,7 +48,6 @@ LandingPageModule = __decorate([
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_ionic_angular__ = __webpack_require__(158);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_auth_auth__ = __webpack_require__(159);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__providers_pushnotif_pushnotif__ = __webpack_require__(301);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -63,27 +62,20 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-
 var LandingPage = (function () {
-    function LandingPage(navCtrl, navParams, authProvider, storage, formBuilder, toastCtrl, pushnotifProvider) {
+    function LandingPage(navCtrl, navParams, authProvider, storage, formBuilder, toastCtrl) {
         this.navCtrl = navCtrl;
         this.navParams = navParams;
         this.authProvider = authProvider;
         this.storage = storage;
         this.formBuilder = formBuilder;
         this.toastCtrl = toastCtrl;
-        this.pushnotifProvider = pushnotifProvider;
         this.isLoginDisable = true;
         this.loginForm = formBuilder.group({
             email: [null, __WEBPACK_IMPORTED_MODULE_2__angular_forms__["g" /* Validators */].compose([__WEBPACK_IMPORTED_MODULE_2__angular_forms__["g" /* Validators */].required, __WEBPACK_IMPORTED_MODULE_2__angular_forms__["g" /* Validators */].pattern("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])")])],
             pass: [null, __WEBPACK_IMPORTED_MODULE_2__angular_forms__["g" /* Validators */].required]
         });
     }
-    LandingPage.prototype.ngOnInit = function () {
-        this.pushnotifProvider.getPermission();
-        this.pushnotifProvider.receiveMessage();
-        this.message = this.pushnotifProvider.currentMessage;
-    };
     LandingPage.prototype.navPush = function (page) {
         this.navCtrl.push(page);
     };
@@ -158,8 +150,7 @@ LandingPage = __decorate([
         __WEBPACK_IMPORTED_MODULE_4__providers_auth_auth__["a" /* AuthProvider */],
         __WEBPACK_IMPORTED_MODULE_0__ionic_storage__["b" /* Storage */],
         __WEBPACK_IMPORTED_MODULE_2__angular_forms__["a" /* FormBuilder */],
-        __WEBPACK_IMPORTED_MODULE_3_ionic_angular__["j" /* ToastController */],
-        __WEBPACK_IMPORTED_MODULE_5__providers_pushnotif_pushnotif__["a" /* PushnotifProvider */]])
+        __WEBPACK_IMPORTED_MODULE_3_ionic_angular__["j" /* ToastController */]])
 ], LandingPage);
 
 //# sourceMappingURL=landing.js.map

@@ -406,10 +406,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 var PushnotifProvider = (function () {
     function PushnotifProvider(db, afAuth) {
+        var _this = this;
         this.db = db;
         this.afAuth = afAuth;
         this.messaging = __WEBPACK_IMPORTED_MODULE_3_firebase__["messaging"]();
         this.currentMessage = new __WEBPACK_IMPORTED_MODULE_5_rxjs_BehaviorSubject__["BehaviorSubject"](null);
+        this.afAuth.authState.subscribe(function (user) {
+            console.log(user.uid);
+            _this.userLoggedId = user.uid;
+        });
     }
     PushnotifProvider.prototype.updateToken = function (token) {
         var _this = this;
@@ -418,7 +423,7 @@ var PushnotifProvider = (function () {
             if (!user)
                 return;
             var data = (_a = {}, _a[user.uid] = token, _a);
-            _this.db.object('fcmTokens/').update(data);
+            _this.db.object("fcmTokens/" + _this.userLoggedId + "/").set(data);
             var _a;
         });
     };

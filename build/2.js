@@ -45,6 +45,7 @@ TabsPageModule = __decorate([
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return TabsPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(158);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_pushnotif_pushnotif__ = __webpack_require__(301);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -56,13 +57,20 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 
+
 var TabsPage = (function () {
-    function TabsPage() {
+    function TabsPage(pushnotifProvider) {
+        this.pushnotifProvider = pushnotifProvider;
         this.tab1 = "ChatPage";
         this.tab2 = "NotificationsPage";
         this.tab3 = "ProfilePage";
         this.tab4 = "SettingsPage";
     }
+    TabsPage.prototype.ngOnInit = function () {
+        this.pushnotifProvider.getPermission();
+        this.pushnotifProvider.receiveMessage();
+        this.message = this.pushnotifProvider.currentMessage;
+    };
     return TabsPage;
 }());
 TabsPage = __decorate([
@@ -70,7 +78,7 @@ TabsPage = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
         selector: 'page-tabs',template:/*ion-inline-start:"C:\Users\ph2150108\Desktop\angular4\FireChat\src\pages\tabs\tabs.html"*/'<ion-tabs color="light-blue">\n\n  <ion-tab tabIcon="chatbubbles" tabTitle="Chat" [root]="tab1"></ion-tab>\n\n  <ion-tab tabIcon="notifications" tabTitle="Notifications" [root]="tab2"></ion-tab>\n\n  <ion-tab tabIcon="person" tabTitle="Profile" [root]="tab3"></ion-tab>\n\n  <ion-tab tabIcon="settings" tabTitle="Settings" [root]="tab4"></ion-tab>\n\n</ion-tabs>\n\n\n\n'/*ion-inline-end:"C:\Users\ph2150108\Desktop\angular4\FireChat\src\pages\tabs\tabs.html"*/,
     }),
-    __metadata("design:paramtypes", [])
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__providers_pushnotif_pushnotif__["a" /* PushnotifProvider */]])
 ], TabsPage);
 
 //# sourceMappingURL=tabs.js.map
