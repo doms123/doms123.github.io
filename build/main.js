@@ -512,6 +512,10 @@ var UserProvider = (function () {
                             for (var friendKey in userData[userKey].friends) {
                                 friendArr.push(friendKey);
                             }
+                            var friendReqArr = [];
+                            for (var friendReqKey in userData[userKey].friendReq) {
+                                friendArr.push(friendReqKey);
+                            }
                             if (friendArr.indexOf(_this.loggedUserId) == -1) {
                                 userArr.push(userData[userKey]);
                                 userData[userKey]['key'] = userKey;
@@ -529,6 +533,9 @@ var UserProvider = (function () {
     UserProvider.prototype.sendFriendRequest = function (recipient) {
         var _this = this;
         var promise = new Promise(function (resolve, reject) {
+            // add friendReq node to the sender user
+            __WEBPACK_IMPORTED_MODULE_3_firebase_app__["database"]().ref("users/" + _this.loggedUserId + "/friendReq/" + recipient.key).set('false');
+            // add friend node to the recipient user
             var friendReq = __WEBPACK_IMPORTED_MODULE_3_firebase_app__["database"]().ref("users/" + recipient.key + "/friends/" + _this.loggedUserId).set('false');
             resolve(friendReq);
         });
