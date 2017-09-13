@@ -286,11 +286,9 @@ var ChatProvider = (function () {
         this.afAuth = afAuth;
         this.usersRef = __WEBPACK_IMPORTED_MODULE_3_firebase_app__["database"]().ref('/users');
         afAuth.authState.subscribe(function (user) {
-            // console.log(user)
             _this.user = _this.db.object('/users/' + user.uid, { preserveSnapshot: true });
             _this.user.subscribe(function (userData) {
                 _this.user = userData.val();
-                //console.log(userData.val())
                 var photo;
                 if (!('photo' in _this.user)) {
                     photo = 'none';
@@ -412,7 +410,6 @@ var PushnotifProvider = (function () {
         this.messaging = __WEBPACK_IMPORTED_MODULE_3_firebase__["messaging"]();
         this.currentMessage = new __WEBPACK_IMPORTED_MODULE_5_rxjs_BehaviorSubject__["BehaviorSubject"](null);
         this.afAuth.authState.subscribe(function (user) {
-            console.log(user.uid);
             _this.userLoggedId = user.uid;
         });
     }
@@ -423,7 +420,7 @@ var PushnotifProvider = (function () {
             if (!user)
                 return;
             var data = (_a = {}, _a[user.uid] = token, _a);
-            _this.db.object("fcmTokens/" + _this.userLoggedId + "/").set(data);
+            _this.db.object('/fcmTokens/').update(data);
             var _a;
         });
     };
