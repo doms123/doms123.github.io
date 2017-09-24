@@ -7,8 +7,8 @@ webpackJsonp([0],{
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "UserslistPageModule", function() { return UserslistPageModule; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(158);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__userslist__ = __webpack_require__(488);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(159);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__userslist__ = __webpack_require__(487);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -29,7 +29,7 @@ UserslistPageModule = __decorate([
             __WEBPACK_IMPORTED_MODULE_2__userslist__["a" /* UserslistPage */],
         ],
         imports: [
-            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* IonicPageModule */].forChild(__WEBPACK_IMPORTED_MODULE_2__userslist__["a" /* UserslistPage */]),
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* IonicPageModule */].forChild(__WEBPACK_IMPORTED_MODULE_2__userslist__["a" /* UserslistPage */]),
         ],
     })
 ], UserslistPageModule);
@@ -38,16 +38,16 @@ UserslistPageModule = __decorate([
 
 /***/ }),
 
-/***/ 488:
+/***/ 487:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return UserslistPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(158);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_user_user__ = __webpack_require__(302);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(159);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_user_user__ = __webpack_require__(304);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_forms__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_debounceTime__ = __webpack_require__(489);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_debounceTime__ = __webpack_require__(488);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_debounceTime___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_debounceTime__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -64,25 +64,54 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 var UserslistPage = (function () {
-    function UserslistPage(navCtrl, navParams, toastCtrl, userProvider) {
+    function UserslistPage(navCtrl, navParams, toastCtrl, userProvider, alertCtrl) {
         this.navCtrl = navCtrl;
         this.navParams = navParams;
         this.toastCtrl = toastCtrl;
         this.userProvider = userProvider;
+        this.alertCtrl = alertCtrl;
         this.users = [];
         this.searchUserArr = [];
         this.searching = false;
         this.searchStr = '';
         this.noResult = false;
-        this.getUsers();
+        this.userLoggedId = navParams.data.userId;
         this.searchControl = new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["b" /* FormControl */]();
+        this.getUsers();
     }
     UserslistPage.prototype.getUsers = function () {
         var _this = this;
-        console.log('test');
-        this.userProvider.users().then(function (res) {
-            _this.users = res;
-            _this.searchUserArr = res;
+        this.userProvider.users().subscribe(function (users) {
+            var friendArr = [_this.userLoggedId];
+            var usersList = [];
+            for (var userKey in users) {
+                var userObj = users[userKey];
+                if (userObj.$key == _this.userLoggedId) {
+                    if ('friendReq' in userObj) {
+                        for (var friendUserId in userObj.friendReq) {
+                            if (friendArr.indexOf(friendUserId) == -1) {
+                                friendArr.push(friendUserId);
+                            }
+                        }
+                    }
+                    if ('friends' in userObj) {
+                        for (var friendUserId in userObj.friends) {
+                            if (friendArr.indexOf(friendUserId) == -1) {
+                                friendArr.push(friendUserId);
+                            }
+                        }
+                    }
+                }
+            }
+            for (var userKey in users) {
+                var userObj = users[userKey];
+                userObj.key = users[userKey].$key;
+                if (friendArr.indexOf(users[userKey].$key) == -1) {
+                    usersList.push(userObj);
+                }
+            }
+            _this.users = usersList;
+            _this.searchUserArr = usersList;
         });
     };
     UserslistPage.prototype.ionViewDidLoad = function () {
@@ -112,52 +141,84 @@ var UserslistPage = (function () {
         }
     };
     UserslistPage.prototype.sendFriendRequest = function (recipient, index) {
+        // this.users.splice(index, 1);
+        // this.userProvider.sendFriendRequest(recipient).then(() => {
         var _this = this;
-        this.users.splice(index, 1);
-        this.userProvider.sendFriendRequest(recipient).then(function () {
-            var toast = _this.toastCtrl.create({
-                message: "Friend request to " + recipient.displayName + " was sent",
-                duration: 5000
-            });
-            toast.present();
-            if (_this.users.length == 0) {
-                _this.noResult = true;
-            }
-            else {
-                _this.noResult = false;
-            }
+        //   let toast = this.toastCtrl.create({
+        //     message: `Friend request to ${recipient.displayName} was sent`,
+        //     duration: 5000
+        //   });
+        //   toast.present();
+        //   if(this.users.length == 0) { // no result
+        //     this.noResult = true;
+        //   }else {
+        //     this.noResult = false;
+        //   }
+        // });
+        var confirm = this.alertCtrl.create({
+            title: 'Send a friend request?',
+            message: "Do you want " + recipient['displayName'] + " to be your friend?",
+            buttons: [
+                {
+                    text: 'No',
+                    handler: function () {
+                        console.log('Disagree clicked');
+                    }
+                },
+                {
+                    text: 'Yes',
+                    handler: function () {
+                        _this.users.splice(index, 1);
+                        _this.userProvider.sendFriendRequest(recipient).then(function () {
+                            var toast = _this.toastCtrl.create({
+                                message: "Friend request to " + recipient.displayName + " was sent",
+                                duration: 5000
+                            });
+                            toast.present();
+                            if (_this.users.length == 0) {
+                                _this.noResult = true;
+                            }
+                            else {
+                                _this.noResult = false;
+                            }
+                        });
+                    }
+                }
+            ]
         });
+        confirm.present();
     };
     return UserslistPage;
 }());
 UserslistPage = __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* IonicPage */])(),
+    Object(__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* IonicPage */])(),
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-        selector: 'page-userslist',template:/*ion-inline-start:"C:\Users\ph2150108\Desktop\angular4\FireChat\src\pages\userslist\userslist.html"*/'<ion-header>\n\n  <ion-navbar color="light-blue">\n\n    <ion-title>Users</ion-title>\n\n  </ion-navbar>\n\n</ion-header>\n\n\n\n<ion-content>\n\n  <ion-searchbar [(ngModel)]="searchStr" [formControl]="searchControl" (ionInput)="onSearchInput()"></ion-searchbar>\n\n  <div *ngIf="searching" class="spinner-container">\n\n    <ion-spinner item-start="" name="bubbles" class="spinner spinner-ios spinner-bubbles spinner-ios-bubbles"></ion-spinner>\n\n  </div>\n\n  <ion-list *ngIf="!searching">\n\n    <ion-item *ngFor="let user of users; let i = index">\n\n      <ion-avatar item-start>\n\n        <span class="unreadCount" *ngIf="user.unread">{{user.unread}}</span>\n\n        <img src="{{user.photo}}" *ngIf="user.photo;else photo;">\n\n        <ng-template #photo><span class="icon-circle">{{user.displayName.charAt(0)}}</span></ng-template>\n\n      </ion-avatar>\n\n      <ion-label>\n\n        <h3>{{user.displayName}} <span [class]="user.status"></span></h3>\n\n        <p>{{user.email}}</p>\n\n      </ion-label>\n\n      <button ion-button item-end icon-left icon-only small color="light-blue" (click)="sendFriendRequest(user, i)">\n\n        <ion-icon name="person-add"></ion-icon>\n\n      </button>\n\n    </ion-item>\n\n\n\n    <ion-item *ngIf="noResult && !users.length">\n\n      <ion-label>\n\n        <h3>No users found!</h3>\n\n      \n\n      </ion-label>\n\n    </ion-item>\n\n  </ion-list>\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\ph2150108\Desktop\angular4\FireChat\src\pages\userslist\userslist.html"*/,
+        selector: 'page-userslist',template:/*ion-inline-start:"C:\Users\Sanchez\Desktop\ng4_ionic3\FireChat\src\pages\userslist\userslist.html"*/'<ion-content no-padding>\n\n  <ion-searchbar [(ngModel)]="searchStr" [formControl]="searchControl" (ionInput)="onSearchInput()"></ion-searchbar>\n\n  <div *ngIf="searching" class="spinner-container">\n\n    <ion-spinner item-start="" name="bubbles" class="spinner spinner-ios spinner-bubbles spinner-ios-bubbles"></ion-spinner>\n\n  </div>\n\n  <ion-list *ngIf="!searching">\n\n    <ion-item *ngFor="let user of users; let i = index">\n\n      <ion-avatar item-start>\n\n        <span class="unreadCount" *ngIf="user.unread">{{user.unread}}</span>\n\n        <img src="{{user.photo}}" *ngIf="user.photo;else photo;">\n\n        <ng-template #photo><span class="icon-circle">{{user.displayName.charAt(0)}}</span></ng-template>\n\n        <span [class]="user.status"></span>\n\n      </ion-avatar>\n\n      <ion-label>\n\n        <h3>{{user.displayName}}</h3>\n\n        <p>{{user.email}}</p>\n\n      </ion-label>\n\n      <button ion-button item-end icon-left icon-only small color="light-blue" (click)="sendFriendRequest(user, i)">\n\n        <ion-icon name="person-add"></ion-icon>\n\n      </button>\n\n    </ion-item>\n\n\n\n    <ion-item *ngIf="noResult && !users.length">\n\n      <ion-label>\n\n        <h3>No users found!</h3>\n\n      \n\n      </ion-label>\n\n    </ion-item>\n\n  </ion-list>\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\Sanchez\Desktop\ng4_ionic3\FireChat\src\pages\userslist\userslist.html"*/,
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavController */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavParams */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* ToastController */],
-        __WEBPACK_IMPORTED_MODULE_2__providers_user_user__["a" /* UserProvider */]])
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavController */],
+        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavParams */],
+        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* ToastController */],
+        __WEBPACK_IMPORTED_MODULE_2__providers_user_user__["a" /* UserProvider */],
+        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */]])
 ], UserslistPage);
 
 //# sourceMappingURL=userslist.js.map
 
 /***/ }),
 
-/***/ 489:
+/***/ 488:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var Observable_1 = __webpack_require__(8);
-var debounceTime_1 = __webpack_require__(490);
+var debounceTime_1 = __webpack_require__(489);
 Observable_1.Observable.prototype.debounceTime = debounceTime_1.debounceTime;
 //# sourceMappingURL=debounceTime.js.map
 
 /***/ }),
 
-/***/ 490:
+/***/ 489:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -168,7 +229,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Subscriber_1 = __webpack_require__(25);
-var async_1 = __webpack_require__(91);
+var async_1 = __webpack_require__(92);
 /**
  * Emits a value from the source Observable only after a particular time span
  * has passed without another source emission.

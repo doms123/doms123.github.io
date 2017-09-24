@@ -5,10 +5,10 @@ webpackJsonp([9],{
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "IndividualChatPageModule", function() { return IndividualChatPageModule; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ChatsPageModule", function() { return ChatsPageModule; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(158);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__individual_chat__ = __webpack_require__(480);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(159);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__chats__ = __webpack_require__(478);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -18,34 +18,37 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
-var IndividualChatPageModule = (function () {
-    function IndividualChatPageModule() {
+var ChatsPageModule = (function () {
+    function ChatsPageModule() {
     }
-    return IndividualChatPageModule;
+    return ChatsPageModule;
 }());
-IndividualChatPageModule = __decorate([
+ChatsPageModule = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["L" /* NgModule */])({
         declarations: [
-            __WEBPACK_IMPORTED_MODULE_2__individual_chat__["a" /* IndividualChatPage */],
+            __WEBPACK_IMPORTED_MODULE_2__chats__["a" /* ChatsPage */],
         ],
         imports: [
-            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* IonicPageModule */].forChild(__WEBPACK_IMPORTED_MODULE_2__individual_chat__["a" /* IndividualChatPage */]),
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* IonicPageModule */].forChild(__WEBPACK_IMPORTED_MODULE_2__chats__["a" /* ChatsPage */]),
         ],
     })
-], IndividualChatPageModule);
+], ChatsPageModule);
 
-//# sourceMappingURL=individual-chat.module.js.map
+//# sourceMappingURL=chats.module.js.map
 
 /***/ }),
 
-/***/ 480:
+/***/ 478:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return IndividualChatPage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__providers_chat_chat__ = __webpack_require__(300);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ChatsPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__providers_auth_auth__ = __webpack_require__(160);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(158);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(159);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_chat_chat__ = __webpack_require__(301);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ionic_storage__ = __webpack_require__(91);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__providers_pushnotif_pushnotif__ = __webpack_require__(302);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -58,48 +61,111 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-var IndividualChatPage = (function () {
-    function IndividualChatPage(navCtrl, navParams, chatProvider) {
+
+
+
+var ChatsPage = (function () {
+    function ChatsPage(navCtrl, navParams, chatProvider, storage, authProvider, app, pushnotifProvider) {
+        var _this = this;
         this.navCtrl = navCtrl;
         this.navParams = navParams;
         this.chatProvider = chatProvider;
-        this.recieverId = navParams.get('receiverId');
-        this.receiverName = navParams.get('receiverName');
-        this.receiverStatus = navParams.get('receiverStatus');
-        this.chatRoom = navParams.get('chatRoom');
-        this.tabBarElement = document.querySelector(".tabbar.show-tabbar");
-        this.loadChats();
-    }
-    IndividualChatPage.prototype.ionViewWillEnter = function () {
-        this.tabBarElement.style.display = "none";
-    };
-    IndividualChatPage.prototype.ionViewWillLeave = function () {
-        this.tabBarElement.style.display = "flex";
-    };
-    IndividualChatPage.prototype.sendMessage = function () {
-        this.chatProvider.sendMessage(this.chatRoom, this.chatMsg, this.recieverId);
-        this.chatMsg = "";
-    };
-    IndividualChatPage.prototype.loadChats = function () {
-        var _this = this;
-        this.chatProvider.loadChats(this.chatRoom).subscribe(function (chats) {
-            _this.chats = chats;
+        this.storage = storage;
+        this.authProvider = authProvider;
+        this.app = app;
+        this.pushnotifProvider = pushnotifProvider;
+        this.friends = [];
+        this.friendOffline = [];
+        this.storage.get('userId').then(function (userId) {
+            _this.authProvider.loggedUserMetaData(userId).subscribe(function (userData) {
+                _this.loadChatUsers(userId, userData.displayName);
+            });
         });
-        //this.chats =
+    }
+    ChatsPage.prototype.pushPage = function (page) {
+        this.navCtrl.push('UserslistPage');
     };
-    return IndividualChatPage;
+    ChatsPage.prototype.loadChatUsers = function (userId, userName) {
+        var _this = this;
+        this.chatProvider.loadChatUsersFriendReq(userId).subscribe(function (users) {
+            var friendArr = [];
+            if ('friendReq' in users) {
+                for (var friendKey in users.friendReq) {
+                    if (friendArr.indexOf(friendKey) == -1) {
+                        friendArr.push(friendKey);
+                    }
+                }
+            }
+            if ('friends' in users) {
+                for (var friendKey in users.friends) {
+                    if (friendArr.indexOf(friendKey) == -1) {
+                        friendArr.push(friendKey);
+                    }
+                }
+            }
+            if (friendArr.length > 0) {
+                for (var _i = 0, friendArr_1 = friendArr; _i < friendArr_1.length; _i++) {
+                    var friendKey = friendArr_1[_i];
+                    _this.chatProvider.getFriendMetaData(friendKey).subscribe(function (userData) {
+                        var roomName = (userName < userData.displayName ? userName + '_' + userData.displayName : userData.displayName + '_' + userName);
+                        roomName = roomName.replace(/\ /g, '-');
+                        _this.chatProvider.loadChatUsersFriendReq(userId).subscribe(function (user) {
+                            var unreadObj = user.unreadMessage;
+                            var unreadCounter = 0;
+                            for (var unreadKey in unreadObj) {
+                                if (roomName in unreadObj[unreadKey]) {
+                                    unreadCounter++;
+                                }
+                            }
+                            userData['unreadCount'] = unreadCounter;
+                            for (var key in _this.friends) {
+                                var friends = _this.friends;
+                                if (userData.$key == friends[key].$key) {
+                                    _this.friends.splice(parseInt(key), 1);
+                                }
+                            }
+                            _this.chatProvider.lastUreadMessage(roomName).subscribe(function (messages) {
+                                var messageLength = Object.keys(messages).length;
+                                var messageCounter = 1;
+                                for (var messageKey in messages) {
+                                    var messageObj = messages[messageKey];
+                                    if (messageLength == messageCounter) {
+                                        console.log('messageObj', messageObj);
+                                        userData['lastMessage'] = messageObj.message;
+                                        userData['lastMessageDate'] = messageObj.timestamp;
+                                    }
+                                    messageCounter++;
+                                }
+                            });
+                            _this.friends.push(userData);
+                            console.log('userData', userData);
+                        });
+                    });
+                }
+            }
+        });
+    };
+    ChatsPage.prototype.pushChatRoom = function (user) {
+        this.chatProvider.chatMember(user.$key, user.displayName);
+        this.navCtrl.push('IndividualChatPage', user);
+    };
+    return ChatsPage;
 }());
-IndividualChatPage = __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_2_ionic_angular__["e" /* IonicPage */])(),
+ChatsPage = __decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_2_ionic_angular__["f" /* IonicPage */])(),
     Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["n" /* Component */])({
-        selector: 'page-individual-chat',template:/*ion-inline-start:"C:\Users\ph2150108\Desktop\angular4\FireChat\src\pages\individual-chat\individual-chat.html"*/'<!-- <ion-header>\n\n  <ion-navbar color="light-blue">\n\n    <ion-title>{{receiverName}} <p><span [class]="receiverStatus"></span>{{receiverStatus}}</p></ion-title>\n\n  </ion-navbar>\n\n</ion-header>\n\n\n\n<ion-content no-padding no-margin>\n\n    <ion-list>\n\n        <ion-item *ngFor="#message of messages">{{message}}</ion-item>\n\n        <ion-item>Test message</ion-item>\n\n    </ion-list>\n\n</ion-content>\n\n\n\n<ion-footer position="bottom">\n\n    <ion-item>\n\n      <ion-icon item-left name="attach" color="light-blue"></ion-icon>\n\n      <ion-input type="text" placeholder="Mobile no"></ion-input>\n\n      <ion-icon item-right name="send" (click)="pickContactNo()" color="light-blue"></ion-icon>\n\n    </ion-item>\n\n</ion-footer>\n\n\n\n\n\n -->\n\n\n\n <ion-header>\n\n    <ion-navbar color="light-blue">\n\n        <ion-title>{{receiverName}} <p><span [class]="receiverStatus"></span>{{receiverStatus}}</p></ion-title>\n\n      </ion-navbar>\n\n </ion-header>\n\n <ion-content>\n\n   <div class="directChatArea">\n\n      <div class="directChatMsg" *ngFor="let chat of chats">\n\n          <div class="directChatInfo">\n\n            <span class="directChatName" float-left>{{chat.name}}</span>\n\n            <span class="directChatTimestamp" float-right>{{chat.timestamp}}</span>\n\n          </div>\n\n          <img class="directChatImg" src="{{chat.senderPhoto}}" *ngIf="chat.senderPhoto != \'none\';else photo;">\n\n          <ng-template #photo><span class="iconCircle">A</span></ng-template>\n\n          <div class="talk-bubble tri-right tri-right left-top">\n\n            <div class="talktext">\n\n              <p>{{chat.message}}</p>\n\n            </div>\n\n          </div>\n\n      </div>\n\n   </div>\n\n </ion-content>\n\n <ion-footer position="bottom">\n\n    <ion-item>\n\n        <ion-icon item-left name="attach" color="light-blue"></ion-icon>\n\n        <ion-input type="text" [(ngModel)]="chatMsg" name="chatMsg" (keyup.enter)="sendMessage()" placeholder="Enter your message . . ."></ion-input>\n\n        <ion-icon item-right name="send" color="light-blue" (click)="sendMessage()"></ion-icon>\n\n    </ion-item>\n\n </ion-footer>'/*ion-inline-end:"C:\Users\ph2150108\Desktop\angular4\FireChat\src\pages\individual-chat\individual-chat.html"*/,
+        selector: 'page-chat',template:/*ion-inline-start:"C:\Users\Sanchez\Desktop\ng4_ionic3\FireChat\src\pages\chats\chats.html"*/'<ion-content no-padding>\n\n    <ion-item-divider color="light">Friends on FireChat</ion-item-divider>       \n\n    <ion-item *ngFor="let user of friends; let i = index" (click)="pushChatRoom(user)">\n\n        <ion-avatar item-start>\n\n          <img src="{{user.photo}}" *ngIf="user.photo;else photo;">\n\n          <ng-template #photo><span class="icon-circle">{{user.displayName.charAt(0)}}</span></ng-template>\n\n          <span [class]="user.status"></span>\n\n        </ion-avatar>\n\n        <ion-label>\n\n          <h3 [class.fwB]="user.unreadCount != 0">{{user.displayName}}</h3>\n\n          <p *ngIf="user.lastMessage == \'\'">No previous chat . . .</p>\n\n          <p [class.txtBlack]="user.unreadCount != 0" *ngIf="user.lastMessage != \'\'">{{user.lastMessage}}</p>\n\n          \n\n        </ion-label>\n\n        <ion-note item-end [class.top30]="user.status == \'offline\'" class="unreadCount" *ngIf="user.unreadCount != 0">{{user.unreadCount}}</ion-note>\n\n        <ion-note item-end class="timeStamp">{{user.lastMessageDate | date:\'shortTime\'}}</ion-note>\n\n    </ion-item>\n\n</ion-content>\n\n\n\n'/*ion-inline-end:"C:\Users\Sanchez\Desktop\ng4_ionic3\FireChat\src\pages\chats\chats.html"*/,
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2_ionic_angular__["g" /* NavController */],
-        __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["h" /* NavParams */],
-        __WEBPACK_IMPORTED_MODULE_0__providers_chat_chat__["a" /* ChatProvider */]])
-], IndividualChatPage);
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2_ionic_angular__["h" /* NavController */],
+        __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["i" /* NavParams */],
+        __WEBPACK_IMPORTED_MODULE_3__providers_chat_chat__["a" /* ChatProvider */],
+        __WEBPACK_IMPORTED_MODULE_4__ionic_storage__["b" /* Storage */],
+        __WEBPACK_IMPORTED_MODULE_0__providers_auth_auth__["a" /* AuthProvider */],
+        __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["b" /* App */],
+        __WEBPACK_IMPORTED_MODULE_5__providers_pushnotif_pushnotif__["a" /* PushnotifProvider */]])
+], ChatsPage);
 
-//# sourceMappingURL=individual-chat.js.map
+//# sourceMappingURL=chats.js.map
 
 /***/ })
 

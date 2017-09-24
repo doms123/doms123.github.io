@@ -5,10 +5,10 @@ webpackJsonp([8],{
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LandingPageModule", function() { return LandingPageModule; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "IndividualChatPageModule", function() { return IndividualChatPageModule; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(158);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__landing__ = __webpack_require__(481);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(159);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__individual_chat__ = __webpack_require__(479);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -18,36 +18,34 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
-var LandingPageModule = (function () {
-    function LandingPageModule() {
+var IndividualChatPageModule = (function () {
+    function IndividualChatPageModule() {
     }
-    return LandingPageModule;
+    return IndividualChatPageModule;
 }());
-LandingPageModule = __decorate([
+IndividualChatPageModule = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["L" /* NgModule */])({
         declarations: [
-            __WEBPACK_IMPORTED_MODULE_2__landing__["a" /* LandingPage */],
+            __WEBPACK_IMPORTED_MODULE_2__individual_chat__["a" /* IndividualChatPage */],
         ],
         imports: [
-            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* IonicPageModule */].forChild(__WEBPACK_IMPORTED_MODULE_2__landing__["a" /* LandingPage */]),
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* IonicPageModule */].forChild(__WEBPACK_IMPORTED_MODULE_2__individual_chat__["a" /* IndividualChatPage */]),
         ],
     })
-], LandingPageModule);
+], IndividualChatPageModule);
 
-//# sourceMappingURL=landing.module.js.map
+//# sourceMappingURL=individual-chat.module.js.map
 
 /***/ }),
 
-/***/ 481:
+/***/ 479:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LandingPage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ionic_storage__ = __webpack_require__(90);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return IndividualChatPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__providers_chat_chat__ = __webpack_require__(301);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_ionic_angular__ = __webpack_require__(158);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_auth_auth__ = __webpack_require__(159);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(159);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -60,100 +58,48 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-
-
-var LandingPage = (function () {
-    function LandingPage(navCtrl, navParams, authProvider, storage, formBuilder, toastCtrl) {
+var IndividualChatPage = (function () {
+    function IndividualChatPage(navCtrl, navParams, chatProvider) {
         this.navCtrl = navCtrl;
         this.navParams = navParams;
-        this.authProvider = authProvider;
-        this.storage = storage;
-        this.formBuilder = formBuilder;
-        this.toastCtrl = toastCtrl;
-        this.isLoginDisable = true;
-        this.loginForm = formBuilder.group({
-            email: [null, __WEBPACK_IMPORTED_MODULE_2__angular_forms__["g" /* Validators */].compose([__WEBPACK_IMPORTED_MODULE_2__angular_forms__["g" /* Validators */].required, __WEBPACK_IMPORTED_MODULE_2__angular_forms__["g" /* Validators */].pattern("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])")])],
-            pass: [null, __WEBPACK_IMPORTED_MODULE_2__angular_forms__["g" /* Validators */].required]
-        });
+        this.chatProvider = chatProvider;
+        this.recieverId = navParams.get('$key');
+        this.receiverName = navParams.get('displayName');
+        this.receiverStatus = navParams.get('status');
+        // this.chatRoom       = navParams.get('chatRoom');
+        this.tabBarElement = document.querySelector(".tabbar.show-tabbar");
+        this.loadChats();
     }
-    LandingPage.prototype.navPush = function (page) {
-        this.navCtrl.push(page);
+    IndividualChatPage.prototype.ionViewWillEnter = function () {
+        this.tabBarElement.style.display = "none";
     };
-    LandingPage.prototype.hasInput = function () {
-        if (this.loginForm.status == 'VALID') {
-            this.isLoginDisable = false;
-        }
-        else {
-            this.isLoginDisable = true;
-        }
+    IndividualChatPage.prototype.ionViewWillLeave = function () {
+        this.tabBarElement.style.display = "flex";
     };
-    LandingPage.prototype.login = function () {
+    IndividualChatPage.prototype.sendMessage = function () {
+        this.chatProvider.sendMessage(this.chatMsg, this.recieverId);
+        this.chatMsg = "";
+    };
+    IndividualChatPage.prototype.loadChats = function () {
         var _this = this;
-        this.isLoginDisable = true;
-        this.authProvider.login(this.email, this.pass)
-            .then(function (res) {
-            if (!res.emailVerified) {
-                var toast = _this.toastCtrl.create({
-                    message: 'Please verify your email to active your account',
-                    duration: 5000
-                });
-                _this.isLoginDisable = false;
-                toast.present();
-            }
-            else {
-                // update the verified key to true
-                _this.authProvider.loginVerified(res.uid);
-                _this.storage.set('userId', res.uid);
-                _this.storage.set('userName', res.displayName);
-                _this.storage.set('userEmail', res.email);
-                _this.navCtrl.setRoot('TabsPage');
-            }
-        })
-            .catch(function (err) {
-            var toast = _this.toastCtrl.create({
-                message: err.message,
-                duration: 5000
-            });
-            _this.isLoginDisable = false;
-            toast.present();
+        this.chatProvider.loadChats().subscribe(function (chats) {
+            _this.chats = chats;
+            console.log('chats', chats);
         });
     };
-    LandingPage.prototype.fbLoginBtn = function () {
-        var _this = this;
-        this.authProvider.fbLogin().then(function (res) {
-            var data = res.user;
-            _this.storage.set('userId', data.uid);
-            _this.storage.set('userName', data.displayName);
-            _this.storage.set('userEmail', data.email);
-            _this.navCtrl.setRoot('TabsPage');
-        });
-    };
-    LandingPage.prototype.googleLoginBtn = function () {
-        var _this = this;
-        this.authProvider.googleLogin().then(function (res) {
-            var data = res.user;
-            _this.storage.set('userId', data.uid);
-            _this.storage.set('userName', data.displayName);
-            _this.storage.set('userEmail', data.email);
-            _this.navCtrl.setRoot('TabsPage');
-        });
-    };
-    return LandingPage;
+    return IndividualChatPage;
 }());
-LandingPage = __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_3_ionic_angular__["e" /* IonicPage */])(),
+IndividualChatPage = __decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_2_ionic_angular__["f" /* IonicPage */])(),
     Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["n" /* Component */])({
-        selector: 'page-landing',template:/*ion-inline-start:"C:\Users\ph2150108\Desktop\angular4\FireChat\src\pages\landing\landing.html"*/'<ion-content padding>\n\n  <div text-center margin-top>\n\n      <h1><img src="./assets/images/logo.svg" class="appLogo" alt="FireChat" no-margin></h1>\n\n      <p class="title" no-padding>FireChat</p>\n\n  </div>\n\n  <ion-grid>\n\n      <ion-row>\n\n        <form (submit)="login()" [formGroup]="loginForm" col-12 no-padding>\n\n          <ion-item no-padding>\n\n            <ion-label floating>Email</ion-label>\n\n          <ion-input \n\n          type="text" \n\n          [(ngModel)]="email"\n\n          name="email"\n\n          [formControl]="loginForm.controls[\'email\']"\n\n          (keyup)="hasInput()"\n\n          ></ion-input>\n\n        </ion-item>\n\n          <div \n\n            *ngIf="loginForm.controls[\'email\'].hasError(\'pattern\') && \n\n            loginForm.controls[\'email\'].touched"\n\n            class="errorColor fSize12 mt5" \n\n            >Email Address is invalid\n\n          </div>\n\n          <ion-item no-padding>\n\n              <ion-label floating>Password</ion-label>\n\n          <ion-input \n\n          type="password"\n\n          [(ngModel)]="pass"\n\n          name="pass"\n\n          [formControl]="loginForm.controls[\'pass\']"\n\n          (keyup)="hasInput()"\n\n          ></ion-input>\n\n        </ion-item>\n\n          <div \n\n            *ngIf="loginForm.controls[\'pass\'].hasError(\'required\') && \n\n            loginForm.controls[\'pass\'].touched" \n\n            class="errorColor fSize12 mt5" \n\n            >Password is required\n\n          </div>\n\n    \n\n          <div text-right margin-top>\n\n            <span (click)="navPush(\'RegisterPage\')" padding-top padding-right>Sign up?</span>\n\n            <span (click)="navPush(\'ResetPasswordPage\')" padding-top>Forgot Password?</span>\n\n          </div>\n\n          <button ion-button color="light-blue" medium float-right full margin-top [disabled]="isLoginDisable">LOGIN</button>\n\n        </form>\n\n\n\n        <button ion-button icon-left medium full margin-top class="fbBtn mt200" (click)="fbLoginBtn()">\n\n          <ion-icon name="logo-facebook"></ion-icon>\n\n          LOGIN WITH FACEBOOK\n\n        </button>\n\n\n\n        <button ion-button icon-left medium full margin-top class="googleBtn" (click)="googleLoginBtn()">\n\n          <ion-icon name="logo-googleplus"></ion-icon>\n\n          LOGIN WITH GOOGLE\n\n        </button>\n\n      </ion-row>\n\n    </ion-grid>\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\ph2150108\Desktop\angular4\FireChat\src\pages\landing\landing.html"*/,
+        selector: 'page-individual-chat',template:/*ion-inline-start:"C:\Users\Sanchez\Desktop\ng4_ionic3\FireChat\src\pages\individual-chat\individual-chat.html"*/'<ion-header>\n\n    <ion-navbar color="light-blue">\n\n        <ion-title>{{receiverName}} <p>{{receiverStatus}}</p></ion-title>\n\n      </ion-navbar>\n\n </ion-header>\n\n <ion-content>\n\n   <div class="directChatArea">\n\n      <div class="directChatMsg" *ngFor="let chat of chats">\n\n          <div class="directChatInfo">\n\n            <span class="directChatTimestamp">{{chat.timestamp | date:\'shortTime\'}}</span>\n\n          </div>\n\n          <img class="directChatImg" src="{{chat.senderPhoto}}" *ngIf="chat.senderPhoto != \'none\';else photo;" [hidden]="chat.name != receiverName">\n\n          <ng-template #photo><span class="iconCircle"  [hidden]="chat.name != receiverName">{{chat.name.charAt(0)}}</span></ng-template>\n\n          <div class="talk-bubble tri-right tri-right left-top" [attr.float-right]="chat.name != receiverName ? true : null">\n\n            <div class="talktext">\n\n              <p>{{chat.message}}</p>\n\n            </div>\n\n          </div>\n\n      </div>\n\n   </div>\n\n </ion-content>\n\n <ion-footer position="bottom">\n\n    <ion-item>\n\n        <ion-icon item-left name="attach" color="light-blue"></ion-icon>\n\n        <ion-input type="text" [(ngModel)]="chatMsg" name="chatMsg" (keyup.enter)="sendMessage()" placeholder="Enter your message . . ."></ion-input>\n\n        <ion-icon item-right name="send" color="light-blue" (click)="sendMessage()"></ion-icon>\n\n    </ion-item>\n\n </ion-footer>'/*ion-inline-end:"C:\Users\Sanchez\Desktop\ng4_ionic3\FireChat\src\pages\individual-chat\individual-chat.html"*/,
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_3_ionic_angular__["g" /* NavController */],
-        __WEBPACK_IMPORTED_MODULE_3_ionic_angular__["h" /* NavParams */],
-        __WEBPACK_IMPORTED_MODULE_4__providers_auth_auth__["a" /* AuthProvider */],
-        __WEBPACK_IMPORTED_MODULE_0__ionic_storage__["b" /* Storage */],
-        __WEBPACK_IMPORTED_MODULE_2__angular_forms__["a" /* FormBuilder */],
-        __WEBPACK_IMPORTED_MODULE_3_ionic_angular__["j" /* ToastController */]])
-], LandingPage);
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2_ionic_angular__["h" /* NavController */],
+        __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["i" /* NavParams */],
+        __WEBPACK_IMPORTED_MODULE_0__providers_chat_chat__["a" /* ChatProvider */]])
+], IndividualChatPage);
 
-//# sourceMappingURL=landing.js.map
+//# sourceMappingURL=individual-chat.js.map
 
 /***/ })
 

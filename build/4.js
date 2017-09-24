@@ -7,8 +7,8 @@ webpackJsonp([4],{
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RegisterPageModule", function() { return RegisterPageModule; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(158);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__register__ = __webpack_require__(484);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(159);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__register__ = __webpack_require__(483);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -29,7 +29,7 @@ RegisterPageModule = __decorate([
             __WEBPACK_IMPORTED_MODULE_2__register__["a" /* RegisterPage */],
         ],
         imports: [
-            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* IonicPageModule */].forChild(__WEBPACK_IMPORTED_MODULE_2__register__["a" /* RegisterPage */]),
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* IonicPageModule */].forChild(__WEBPACK_IMPORTED_MODULE_2__register__["a" /* RegisterPage */]),
         ],
     })
 ], RegisterPageModule);
@@ -38,14 +38,14 @@ RegisterPageModule = __decorate([
 
 /***/ }),
 
-/***/ 484:
+/***/ 483:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RegisterPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(158);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_auth_auth__ = __webpack_require__(159);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(159);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_auth_auth__ = __webpack_require__(160);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_forms__ = __webpack_require__(24);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -109,14 +109,14 @@ var RegisterPage = (function () {
     return RegisterPage;
 }());
 RegisterPage = __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* IonicPage */])(),
+    Object(__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* IonicPage */])(),
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-        selector: 'page-register',template:/*ion-inline-start:"C:\Users\ph2150108\Desktop\angular4\FireChat\src\pages\register\register.html"*/'<ion-header>\n\n  <ion-navbar color="light-blue">\n\n    <ion-title>Register</ion-title>\n\n  </ion-navbar>\n\n</ion-header>\n\n\n\n<ion-content padding margin-top>\n\n  <form (submit)="register()" [formGroup]="registerForm">\n\n		<ion-item no-padding>\n\n			<ion-label floating>Name</ion-label>\n\n			<ion-input \n\n				type="text" \n\n				[(ngModel)]="name" \n\n				name="name"\n\n				[formControl]="registerForm.controls[\'name\']"\n\n			></ion-input>\n\n		</ion-item>\n\n  	<ion-item no-padding>\n\n  	  <ion-label floating>Email</ion-label>\n\n			<ion-input \n\n				type="text" \n\n				[(ngModel)]="email" \n\n				name="email"\n\n				[formControl]="registerForm.controls[\'email\']"\n\n			></ion-input>\n\n		</ion-item>\n\n		<div \n\n			*ngIf="registerForm.controls[\'email\'].hasError(\'pattern\') && \n\n			registerForm.controls[\'email\'].touched" \n\n			class="errorColor fSize12 mt5" \n\n			padding-left>Email Address is invalid\n\n		</div>\n\n  	<ion-item no-padding>\n\n  	  <ion-label floating>Password</ion-label>\n\n			<ion-input\n\n				type="password" \n\n				[(ngModel)]="pass" \n\n				name="pass"\n\n				[formControl]="registerForm.controls[\'pass\']"\n\n			></ion-input>\n\n		</ion-item>\n\n		<div \n\n			*ngIf="registerForm.controls[\'pass\'].hasError(\'required\') && \n\n			registerForm.controls[\'pass\'].touched" \n\n			class="errorColor fSize12 mt5" \n\n			padding-left>Password is required\n\n		</div>\n\n		<div *ngIf="registerForm.controls[\'pass\'].hasError(\'minlength\') && \n\n			registerForm.controls[\'pass\'].touched" \n\n			class="errorColor fSize12 mt5" \n\n			padding-left>Your password must be at least 5 characters long.\n\n		</div>\n\n		<button ion-button color="default" medium float-right full margin-top [disabled]="isRegisterDisable">REGISTER</button>\n\n		\n\n	</form>\n\n</ion-content>'/*ion-inline-end:"C:\Users\ph2150108\Desktop\angular4\FireChat\src\pages\register\register.html"*/,
+        selector: 'page-register',template:/*ion-inline-start:"C:\Users\Sanchez\Desktop\ng4_ionic3\FireChat\src\pages\register\register.html"*/'<ion-header>\n\n  <ion-navbar color="light-blue">\n\n    <ion-title>Register</ion-title>\n\n  </ion-navbar>\n\n</ion-header>\n\n\n\n<ion-content padding margin-top>\n\n  <form (submit)="register()" [formGroup]="registerForm">\n\n		<ion-item no-padding>\n\n			<ion-label floating>Name</ion-label>\n\n			<ion-input \n\n				type="text" \n\n				[(ngModel)]="name" \n\n				name="name"\n\n				[formControl]="registerForm.controls[\'name\']"\n\n			></ion-input>\n\n		</ion-item>\n\n  	<ion-item no-padding>\n\n  	  <ion-label floating>Email</ion-label>\n\n			<ion-input \n\n				type="text" \n\n				[(ngModel)]="email" \n\n				name="email"\n\n				[formControl]="registerForm.controls[\'email\']"\n\n			></ion-input>\n\n		</ion-item>\n\n		<div \n\n			*ngIf="registerForm.controls[\'email\'].hasError(\'pattern\') && \n\n			registerForm.controls[\'email\'].touched" \n\n			class="errorColor fSize12 mt5" \n\n			padding-left>Email Address is invalid\n\n		</div>\n\n  	<ion-item no-padding>\n\n  	  <ion-label floating>Password</ion-label>\n\n			<ion-input\n\n				type="password" \n\n				[(ngModel)]="pass" \n\n				name="pass"\n\n				[formControl]="registerForm.controls[\'pass\']"\n\n			></ion-input>\n\n		</ion-item>\n\n		<div \n\n			*ngIf="registerForm.controls[\'pass\'].hasError(\'required\') && \n\n			registerForm.controls[\'pass\'].touched" \n\n			class="errorColor fSize12 mt5" \n\n			padding-left>Password is required\n\n		</div>\n\n		<div *ngIf="registerForm.controls[\'pass\'].hasError(\'minlength\') && \n\n			registerForm.controls[\'pass\'].touched" \n\n			class="errorColor fSize12 mt5" \n\n			padding-left>Your password must be at least 5 characters long.\n\n		</div>\n\n		<button ion-button color="default" medium float-right full margin-top [disabled]="isRegisterDisable">REGISTER</button>\n\n		\n\n	</form>\n\n</ion-content>'/*ion-inline-end:"C:\Users\Sanchez\Desktop\ng4_ionic3\FireChat\src\pages\register\register.html"*/,
     }),
-    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavController */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavParams */],
+    __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavController */],
+        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavParams */],
         __WEBPACK_IMPORTED_MODULE_2__providers_auth_auth__["a" /* AuthProvider */],
-        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* ToastController */],
+        __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* ToastController */],
         __WEBPACK_IMPORTED_MODULE_3__angular_forms__["a" /* FormBuilder */]])
 ], RegisterPage);
 
