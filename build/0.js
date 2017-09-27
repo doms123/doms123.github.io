@@ -70,7 +70,6 @@ var UserslistPage = (function () {
         this.toastCtrl = toastCtrl;
         this.userProvider = userProvider;
         this.alertCtrl = alertCtrl;
-        this.users = [];
         this.searchUserArr = [];
         this.searching = false;
         this.searchStr = '';
@@ -81,37 +80,8 @@ var UserslistPage = (function () {
     }
     UserslistPage.prototype.getUsers = function () {
         var _this = this;
-        this.userProvider.users().subscribe(function (users) {
-            var friendArr = [_this.userLoggedId];
-            var usersList = [];
-            for (var userKey in users) {
-                var userObj = users[userKey];
-                if (userObj.$key == _this.userLoggedId) {
-                    if ('friendReq' in userObj) {
-                        for (var friendUserId in userObj.friendReq) {
-                            if (friendArr.indexOf(friendUserId) == -1) {
-                                friendArr.push(friendUserId);
-                            }
-                        }
-                    }
-                    if ('friends' in userObj) {
-                        for (var friendUserId in userObj.friends) {
-                            if (friendArr.indexOf(friendUserId) == -1) {
-                                friendArr.push(friendUserId);
-                            }
-                        }
-                    }
-                }
-            }
-            for (var userKey in users) {
-                var userObj = users[userKey];
-                userObj.key = users[userKey].$key;
-                if (friendArr.indexOf(users[userKey].$key) == -1) {
-                    usersList.push(userObj);
-                }
-            }
-            _this.users = usersList;
-            _this.searchUserArr = usersList;
+        this.userProvider.users().then(function (users) {
+            _this.users = users;
         });
     };
     UserslistPage.prototype.ionViewDidLoad = function () {
@@ -141,20 +111,7 @@ var UserslistPage = (function () {
         }
     };
     UserslistPage.prototype.sendFriendRequest = function (recipient, index) {
-        // this.users.splice(index, 1);
-        // this.userProvider.sendFriendRequest(recipient).then(() => {
         var _this = this;
-        //   let toast = this.toastCtrl.create({
-        //     message: `Friend request to ${recipient.displayName} was sent`,
-        //     duration: 5000
-        //   });
-        //   toast.present();
-        //   if(this.users.length == 0) { // no result
-        //     this.noResult = true;
-        //   }else {
-        //     this.noResult = false;
-        //   }
-        // });
         var confirm = this.alertCtrl.create({
             title: 'Send a friend request?',
             message: "Do you want " + recipient['displayName'] + " to be your friend?",
@@ -175,12 +132,6 @@ var UserslistPage = (function () {
                                 duration: 5000
                             });
                             toast.present();
-                            if (_this.users.length == 0) {
-                                _this.noResult = true;
-                            }
-                            else {
-                                _this.noResult = false;
-                            }
                         });
                     }
                 }

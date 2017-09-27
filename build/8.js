@@ -63,7 +63,7 @@ var IndividualChatPage = (function () {
         this.navCtrl = navCtrl;
         this.navParams = navParams;
         this.chatProvider = chatProvider;
-        this.recieverId = navParams.get('$key');
+        this.recieverId = navParams.get('key');
         this.receiverName = navParams.get('displayName');
         this.receiverStatus = navParams.get('status');
         // this.chatRoom       = navParams.get('chatRoom');
@@ -77,14 +77,19 @@ var IndividualChatPage = (function () {
         this.tabBarElement.style.display = "flex";
     };
     IndividualChatPage.prototype.sendMessage = function () {
+        console.log('this.recieverId', this.recieverId);
         this.chatProvider.sendMessage(this.chatMsg, this.recieverId);
         this.chatMsg = "";
     };
     IndividualChatPage.prototype.loadChats = function () {
+        //    this.chatProvider.loadChats().subscribe((chats) => {
+        //       this.chats = chats;
+        //       console.log('chats', chats);
+        //    });
+        // }
         var _this = this;
-        this.chatProvider.loadChats().subscribe(function (chats) {
+        this.chatProvider.loadChats().then(function (chats) {
             _this.chats = chats;
-            console.log('chats', chats);
         });
     };
     return IndividualChatPage;

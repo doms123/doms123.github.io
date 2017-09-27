@@ -87,66 +87,14 @@ var ChatsPage = (function () {
     };
     ChatsPage.prototype.loadChatUsers = function (userId, userName) {
         var _this = this;
-        this.chatProvider.loadChatUsersFriendReq(userId).subscribe(function (users) {
-            var friendArr = [];
-            if ('friendReq' in users) {
-                for (var friendKey in users.friendReq) {
-                    if (friendArr.indexOf(friendKey) == -1) {
-                        friendArr.push(friendKey);
-                    }
-                }
-            }
-            if ('friends' in users) {
-                for (var friendKey in users.friends) {
-                    if (friendArr.indexOf(friendKey) == -1) {
-                        friendArr.push(friendKey);
-                    }
-                }
-            }
-            if (friendArr.length > 0) {
-                for (var _i = 0, friendArr_1 = friendArr; _i < friendArr_1.length; _i++) {
-                    var friendKey = friendArr_1[_i];
-                    _this.chatProvider.getFriendMetaData(friendKey).subscribe(function (userData) {
-                        var roomName = (userName < userData.displayName ? userName + '_' + userData.displayName : userData.displayName + '_' + userName);
-                        roomName = roomName.replace(/\ /g, '-');
-                        _this.chatProvider.loadChatUsersFriendReq(userId).subscribe(function (user) {
-                            var unreadObj = user.unreadMessage;
-                            var unreadCounter = 0;
-                            for (var unreadKey in unreadObj) {
-                                if (roomName in unreadObj[unreadKey]) {
-                                    unreadCounter++;
-                                }
-                            }
-                            userData['unreadCount'] = unreadCounter;
-                            for (var key in _this.friends) {
-                                var friends = _this.friends;
-                                if (userData.$key == friends[key].$key) {
-                                    _this.friends.splice(parseInt(key), 1);
-                                }
-                            }
-                            _this.chatProvider.lastUreadMessage(roomName).subscribe(function (messages) {
-                                var messageLength = Object.keys(messages).length;
-                                var messageCounter = 1;
-                                for (var messageKey in messages) {
-                                    var messageObj = messages[messageKey];
-                                    if (messageLength == messageCounter) {
-                                        console.log('messageObj', messageObj);
-                                        userData['lastMessage'] = messageObj.message;
-                                        userData['lastMessageDate'] = messageObj.timestamp;
-                                    }
-                                    messageCounter++;
-                                }
-                            });
-                            _this.friends.push(userData);
-                            console.log('userData', userData);
-                        });
-                    });
-                }
-            }
+        this.chatProvider.loadChatUsers(userId).then(function (users) {
+            console.log('users', users);
+            _this.users = users;
         });
     };
     ChatsPage.prototype.pushChatRoom = function (user) {
-        this.chatProvider.chatMember(user.$key, user.displayName);
+        console.log('user', user['key']);
+        this.chatProvider.chatMember(user['key'], user['displayName']);
         this.navCtrl.push('IndividualChatPage', user);
     };
     return ChatsPage;
@@ -154,7 +102,7 @@ var ChatsPage = (function () {
 ChatsPage = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_2_ionic_angular__["f" /* IonicPage */])(),
     Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["n" /* Component */])({
-        selector: 'page-chat',template:/*ion-inline-start:"C:\Users\Sanchez\Desktop\ng4_ionic3\FireChat\src\pages\chats\chats.html"*/'<ion-content no-padding>\n\n    <ion-item-divider color="light">Friends on FireChat</ion-item-divider>       \n\n    <ion-item *ngFor="let user of friends; let i = index" (click)="pushChatRoom(user)">\n\n        <ion-avatar item-start>\n\n          <img src="{{user.photo}}" *ngIf="user.photo;else photo;">\n\n          <ng-template #photo><span class="icon-circle">{{user.displayName.charAt(0)}}</span></ng-template>\n\n          <span [class]="user.status"></span>\n\n        </ion-avatar>\n\n        <ion-label>\n\n          <h3 [class.fwB]="user.unreadCount != 0">{{user.displayName}}</h3>\n\n          <p *ngIf="user.lastMessage == \'\'">No previous chat . . .</p>\n\n          <p [class.txtBlack]="user.unreadCount != 0" *ngIf="user.lastMessage != \'\'">{{user.lastMessage}}</p>\n\n          \n\n        </ion-label>\n\n        <ion-note item-end [class.top30]="user.status == \'offline\'" class="unreadCount" *ngIf="user.unreadCount != 0">{{user.unreadCount}}</ion-note>\n\n        <ion-note item-end class="timeStamp">{{user.lastMessageDate | date:\'shortTime\'}}</ion-note>\n\n    </ion-item>\n\n</ion-content>\n\n\n\n'/*ion-inline-end:"C:\Users\Sanchez\Desktop\ng4_ionic3\FireChat\src\pages\chats\chats.html"*/,
+        selector: 'page-chat',template:/*ion-inline-start:"C:\Users\Sanchez\Desktop\ng4_ionic3\FireChat\src\pages\chats\chats.html"*/'<ion-content no-padding>\n\n    <ion-item-divider color="light">Friends on FireChat</ion-item-divider>       \n\n    <ion-item *ngFor="let user of users; let i = index" (click)="pushChatRoom(user)">\n\n        <ion-avatar item-start>\n\n          <img src="{{user.photo}}" *ngIf="user.photo;else photo;">\n\n          <ng-template #photo><span class="icon-circle">{{user.displayName.charAt(0)}}</span></ng-template>\n\n          <span [class]="user.status"></span>\n\n        </ion-avatar>\n\n        <ion-label>\n\n          <h3 [class.fwB]="user.unreadCount != 0">{{user.displayName}}</h3>\n\n          <p *ngIf="user.lastMessage == \'\'">No previous chat . . .</p>\n\n          <p [class.txtBlack]="user.unreadCount != 0" *ngIf="user.lastMessage != \'\'">{{user.lastMsg}}</p>\n\n          \n\n        </ion-label>\n\n        <ion-note item-end [class.top30]="user.status == \'offline\'" class="unreadCount" *ngIf="user.unreadCount != 0">{{user.unreadCount}}</ion-note>\n\n        <ion-note item-end class="timeStamp">{{user.lastMsgTimeStamp | date:\'shortTime\'}}</ion-note> \n\n    </ion-item>\n\n</ion-content>\n\n\n\n'/*ion-inline-end:"C:\Users\Sanchez\Desktop\ng4_ionic3\FireChat\src\pages\chats\chats.html"*/,
     }),
     __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2_ionic_angular__["h" /* NavController */],
         __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["i" /* NavParams */],

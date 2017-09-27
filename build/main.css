@@ -27567,7 +27567,6 @@ page-chat .unreadCount {
   padding: 2px 6px;
   border-radius: 50%;
   font-size: 11px;
-  right: 10px;
   top: 30px !important;
 }
 
@@ -27580,7 +27579,8 @@ page-chat .txtBlack {
 }
 
 page-chat .timeStamp {
-  left: 0;
+  position: absolute;
+  right: 10px !important;
 }
 
 page-chat .top30 {

@@ -83,16 +83,12 @@ var NotificationsPage = (function () {
         this.notifProvider.loadListOfNotif(userId).subscribe(function (notifList) {
             var notifArr = [];
             var _loop_1 = function (notif) {
-                _this.notifProvider.getUsers().subscribe(function (users) {
-                    for (var key in users) {
-                        if (key == notif.senderId) {
-                            users[key].notifDesc = notif.description;
-                            users[key].notifKey = notif.$key;
-                            users[key].userId = key;
-                            users[key].dateAdded = notif.dateAdded;
-                            notifArr.push(users[key]);
-                        }
-                    }
+                _this.notifProvider.getUserData(notif.senderId).then(function (userData) {
+                    userData['dateAdded'] = notif.dateAdded;
+                    userData['notifDesc'] = notif.description;
+                    userData['userId'] = notif.senderId;
+                    userData['notifKey'] = notif.$key;
+                    notifArr.push(userData);
                 });
             };
             for (var _i = 0, notifList_1 = notifList; _i < notifList_1.length; _i++) {
@@ -105,8 +101,8 @@ var NotificationsPage = (function () {
     NotificationsPage.prototype.acceptRequest = function (user, i) {
         var _this = this;
         var confirm = this.alertCtrl.create({
-            title: 'Accept this friend request?',
-            message: "Do you accept " + user['displayName'] + " to be your friend?",
+            title: 'Request confirmation',
+            message: "Do you accept " + user['displayName'] + " friend request?",
             buttons: [
                 {
                     text: 'Disagree',
