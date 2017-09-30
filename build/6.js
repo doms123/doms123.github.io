@@ -95,6 +95,7 @@ var NotificationsPage = (function () {
                 var notif = notifList_1[_i];
                 _loop_1(notif);
             }
+            console.log('notifArr', notifArr);
             _this.notifLists = notifArr;
         });
     };

@@ -271,6 +271,7 @@ var ChatProvider = (function () {
         this.db = db;
         this.afAuth = afAuth;
         this.usersRef = __WEBPACK_IMPORTED_MODULE_3_firebase_app__["database"]().ref('/users');
+        this.chatArr = [];
         afAuth.authState.subscribe(function (user) {
             _this.user = _this.db.object('/users/' + user.uid, { preserveSnapshot: true });
             _this.user.subscribe(function (userData) {
@@ -329,19 +330,54 @@ var ChatProvider = (function () {
     };
     ChatProvider.prototype.loadChats = function () {
         var _this = this;
+        var counter = 0;
         var promise = new Promise(function (resolve, reject) {
-            var chatArr = [];
-            var chatRef = __WEBPACK_IMPORTED_MODULE_3_firebase_app__["database"]().ref("/chats/" + _this.roomName + "/");
+            var chatRef = __WEBPACK_IMPORTED_MODULE_3_firebase_app__["database"]().ref("/chats/" + _this.roomName + "/").limitToLast(10);
             chatRef.once('value', function (snapshot) {
+                _this.chatArr = [];
                 var snapObjs = snapshot.val();
                 for (var objKey in snapObjs) {
-                    chatArr.push(snapObjs[objKey]);
+                    snapObjs[objKey].key = objKey;
+                    _this.chatArr.push(snapObjs[objKey]);
                 }
-                console.log('chatArr', chatArr);
-                resolve(chatArr);
+                resolve(_this.chatArr);
             });
             chatRef.on('child_added', function (addedSnap) {
-                chatArr.push(addedSnap.val());
+                if (!_this.firstKnownKey) {
+                    _this.firstKnownKey = addedSnap.key;
+                }
+                addedSnap.val()['key'] = addedSnap.key;
+                _this.chatArr.push(addedSnap.val());
+                if (_this.chatArr.length >= 10) {
+                    resolve(_this.chatArr);
+                }
+            });
+        });
+        return promise;
+    };
+    ChatProvider.prototype.scrollChats = function () {
+        var _this = this;
+        var promise = new Promise(function (resolve, reject) {
+            var chatRef = __WEBPACK_IMPORTED_MODULE_3_firebase_app__["database"]().ref("/chats/" + _this.roomName + "/").orderByKey().endAt(_this.firstKnownKey).limitToLast(10);
+            console.log('this.firstKnownKey', _this.firstKnownKey);
+            chatRef.once('value', function (snapshot) {
+                var snapObjs = snapshot.val();
+                var tempArr = [];
+                for (var objKey in snapObjs) {
+                    snapObjs[objKey].key = objKey;
+                    tempArr.push(snapObjs[objKey]);
+                }
+                tempArr.pop(); // remove the last array to avoid redudunt message
+                tempArr.reverse();
+                for (var _i = 0, tempArr_1 = tempArr; _i < tempArr_1.length; _i++) {
+                    var arrValue = tempArr_1[_i];
+                    _this.chatArr.unshift(arrValue);
+                }
+                _this.firstKnownKey = _this.chatArr[0].key; // set a new last key for pagination
+                console.log('tempArr', tempArr);
+                console.log('snapObjs', snapObjs);
+                console.log('this.chatArr', _this.chatArr);
+                resolve(_this.chatArr);
             });
         });
         return promise;
@@ -394,15 +430,6 @@ var ChatProvider = (function () {
                                 }
                                 childObj.unreadCount = unreadCount;
                             });
-                            // let unreadCount = 0;
-                            // let unreadObj = childObj.unreadMessage;
-                            // for(let unreadKey in unreadObj) {
-                            //   for(let key in unreadObj[unreadKey]) {
-                            //     if(key == roomName) {
-                            //       unreadCount++;
-                            //     }
-                            //   }
-                            // }
                             userArr.push(childObj);
                             console.log('userArr', userArr);
                         });
@@ -434,6 +461,23 @@ var ChatProvider = (function () {
                 });
             });
             resolve(userArr);
+        });
+        return promise;
+    };
+    ChatProvider.prototype.getRemoveUnreadMsg = function () {
+        var _this = this;
+        var promise = new Promise(function (resolve, reject) {
+            var userUnreadRef = __WEBPACK_IMPORTED_MODULE_3_firebase_app__["database"]().ref("/users/" + _this.loggedUserId + "/unreadMessage/");
+            userUnreadRef.once('value', function (snap) {
+                var snapObj = snap.val();
+                for (var snapParentKey in snapObj) {
+                    for (var snapKey in snapObj[snapParentKey]) {
+                        if (snapKey == _this.roomName) {
+                            userUnreadRef.child(snapParentKey).remove();
+                        }
+                    }
+                }
+            });
         });
         return promise;
     };
@@ -570,6 +614,9 @@ var NotifProvider = (function () {
     }
     NotifProvider.prototype.getNotifCount = function (userId) {
         return this.db.list("/notification/" + userId);
+    };
+    NotifProvider.prototype.getUnreadMsgCount = function (userId) {
+        return this.db.list("/users/" + userId + "/unreadMessage/");
     };
     NotifProvider.prototype.loadListOfNotif = function (userId) {
         return this.db.list("/notification/" + userId);
@@ -733,21 +780,6 @@ var UserProvider = (function () {
             resolve(addFriendsToUser2);
         });
         return promise;
-        //   let promise = new Promise((resolve, reject) => {
-        //     // insert new notification
-        //     firebase.database().ref(`/notification/${recipient.key}`).push({
-        //       senderId: this.loggedUserId,
-        //       description: 'requested',
-        //       dateAdded: firebase.database.ServerValue.TIMESTAMP
-        //     });
-        //     // add friendReq node to the sender user
-        //     firebase.database().ref(`users/${this.loggedUserId}/friendReq/${recipient.key}`).set('false');
-        //     // add friend node to the recipient user
-        //     let friendReq =  firebase.database().ref(`users/${recipient.key}/friends/${this.loggedUserId}`).set('false');
-        //     resolve(friendReq);
-        //   });
-        //   return promise;
-        // }
     };
     return UserProvider;
 }());

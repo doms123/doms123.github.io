@@ -76,6 +76,7 @@ var TabsPage = (function () {
         this.storage.get('userId').then(function (userId) {
             _this.loggedUserId = userId;
             _this.loadNotifCount(userId);
+            _this.loadUnreadMsgCount(userId);
             _this.tabsParam['userId'] = userId;
         });
     }
@@ -89,12 +90,18 @@ var TabsPage = (function () {
             _this.notifCount = res.length;
         });
     };
+    TabsPage.prototype.loadUnreadMsgCount = function (userId) {
+        var _this = this;
+        this.notifProvider.getUnreadMsgCount(userId).subscribe(function (unread) {
+            _this.unreadMsgCount = unread.length;
+        });
+    };
     return TabsPage;
 }());
 TabsPage = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* IonicPage */])(),
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-        selector: 'page-tabs',template:/*ion-inline-start:"C:\Users\Sanchez\Desktop\ng4_ionic3\FireChat\src\pages\tabs\tabs.html"*/'<ion-tabs color="light-blue">\n\n  <ion-tab tabIcon="chatbubbles" [rootParams]="tabsParam" tabTitle="Chats" [root]="tab1"></ion-tab>\n\n  <ion-tab tabIcon="notifications" tabTitle="Notifications" [root]="tab2" [rootParams]="tabsParam" tabBadge="{{notifCount > 0 ? notifCount : null}}" tabBadgeStyle="danger"></ion-tab>\n\n  <ion-tab tabIcon="person-add" tabTitle="Users" [rootParams]="tabsParam" [root]="tab3"></ion-tab>\n\n  <ion-tab tabIcon="settings" tabTitle="Settings" [rootParams]="tabsParam" [root]="tab4"></ion-tab>\n\n</ion-tabs>'/*ion-inline-end:"C:\Users\Sanchez\Desktop\ng4_ionic3\FireChat\src\pages\tabs\tabs.html"*/,
+        selector: 'page-tabs',template:/*ion-inline-start:"C:\Users\Sanchez\Desktop\ng4_ionic3\FireChat\src\pages\tabs\tabs.html"*/'<ion-tabs color="light-blue">\n\n  <ion-tab tabIcon="chatbubbles" [rootParams]="tabsParam" tabTitle="Chats" [root]="tab1" tabBadge="{{unreadMsgCount > 0 ? unreadMsgCount : null}}" tabBadgeStyle="danger"></ion-tab>\n\n  <ion-tab tabIcon="notifications" tabTitle="Notifications" [root]="tab2" [rootParams]="tabsParam" tabBadge="{{notifCount > 0 ? notifCount : null}}" tabBadgeStyle="danger"></ion-tab>\n\n  <ion-tab tabIcon="person-add" tabTitle="Users" [rootParams]="tabsParam" [root]="tab3"></ion-tab>\n\n  <ion-tab tabIcon="settings" tabTitle="Settings" [rootParams]="tabsParam" [root]="tab4"></ion-tab>\n\n</ion-tabs>'/*ion-inline-end:"C:\Users\Sanchez\Desktop\ng4_ionic3\FireChat\src\pages\tabs\tabs.html"*/,
     }),
     __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__providers_pushnotif_pushnotif__["a" /* PushnotifProvider */],
         __WEBPACK_IMPORTED_MODULE_3__providers_notif_notif__["a" /* NotifProvider */],
