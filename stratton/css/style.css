@@ -135,6 +135,9 @@ h2 {
 	content: "";
 }
 
+input[type=text]:not(.browser-default):focus {
+	box-shadow: none !important;
+}
 /* Header Start */
 #header-area {
 	padding: 0 1% 20px;
@@ -3440,6 +3443,14 @@ input {
 }
 
 /* FAQS Page Start */
+#faqs-area li[data-hasdropdown='true'] {
+	padding: 5px 0;
+}
+
+#faqs-area li[data-hasdropdown='true'] .collapsible-header {
+	cursor: pointer;
+}
+
 #faqs-page #faqs-area {
 	padding-top: 80px;
 	padding-bottom: 40px;
@@ -4155,7 +4166,6 @@ input {
 
 /* Modal */
 
-
 .modal {
 	width: 40%;
 }
@@ -4214,6 +4224,16 @@ input {
 	/* Nav Area Start at max-width 1100 */
 	#nav-area > ul > li {
 		margin: 27px 10px!important;
+	}
+}
+
+@media only screen and (min-width: 768px) {
+	#faqs-area li[data-hasdropdown='true'] .sp-only {
+		display: none !important;
+	}
+
+	#faqs-area li[data-hasdropdown='true'] .collapsible-header {
+		height: 22px;
 	}
 }
 
@@ -4776,6 +4796,10 @@ input {
 		color: #00c1d5 !important;
 		font-size: 20px !important;
 	}
+
+/*	#faqs-area li[data-hasdropdown='true'] .sp-only {
+		display: block;
+	}*/
 }
 
 @media only screen and (min-width: 993px) and (max-width: 1200px) {

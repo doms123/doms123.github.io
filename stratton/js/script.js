@@ -733,4 +733,15 @@ $(function() {
 		},
 		complete: function() { } // Callback for Modal close
 	});
+
+	$("#faqs-area").on("click", "li[data-hasdropdown='true']", function() {
+		var anchor = $(this).attr("data-id");
+
+		$(".pc-details .list-info").hide();
+		$(".pc-details").find("#"+anchor).fadeIn(600);
+		$(".car-loan-list li a").removeClass("active");
+		$(this).addClass("active");
+
+		return false;
+	});
 });
